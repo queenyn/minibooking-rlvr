@@ -29,6 +29,18 @@ Sampling `K=4` (`T=0.7`) from the frozen SFT model on the remaining 1,800 traini
 - **G2**: `R = 0.60 * DeltaF1 + 0.25 * RiskScore + 0.15 * (1 - Brier)`, `lambda_entropy = 0.0`.
 - **G3**: Identical composite reward to G2, plus loss term `-lambda_entropy * H_reg(T=1.0)` driven by `EntropyController` (`H_ref=0.03256`, `H_low=0.02605`, `exact_threshold=0.9`, log mode `floor=1e-4`, `lambda_max=0.2`, updated every 10 steps). Note: `lambda_entropy` is distinct from the fixed KL penalty `beta_kl = 0.04`.
 
+### Pre-Formal Controller Gradient-Scale Calibration
+
+Before finalizing G3's `EntropyController`, per-component gradient L2 norms were measured across 18 effective-gradient steps (`Qwen3-1.7B` LoRA, `lr=1e-5`, G2 reward):
+
+| Measured Quantity (18 effective steps) | Median | Implication for Controller Design |
+| :--- | :---: | :--- |
+| Policy gradient norm `‖∇_θ L_pg‖` | `0.8963` | Baseline update scale |
+| KL penalty gradient norm `‖∇_θ (beta_kl · KL)‖` | `0.0209` | Small anchor (~2.3% of policy norm) |
+| Entropy gradient norm `‖∇_θ H(T=1.0)‖` (`T=0.7`: `0.5387`) | `0.4809` | Roughly half the policy norm; `cos(∇L_pg, ∇H) ≈ 0.087` (nearly orthogonal) |
+| Parity coefficient `lambda_eq = ‖∇L_pg‖ / ‖∇H(T=1.0)‖` | `1.8511` | Additive `1e-4` step needs ~18,511 updates to reach parity; old `lambda_max = 0.01` is only `0.54%` of policy norm |
+| Finalized log schedule (`floor=1e-4`, `×2`, `lambda_max=0.2`) | `10.8%` cap | Reaches `lambda_max = 0.2` (~10.8% relative gradient norm) in 12 consecutive triggers within a 200-step budget |
+
 ### Training Diagnostics & Run-to-Run Noise
 
 | Group | `dev[:100]` full_exact (50 / 100 / 150 / 200) | Effective Groups / 800 | Zero-Var All-Correct | Zero-Var All-Wrong (`0.0`) | Zero-Var Other Tie |
@@ -70,5 +82,6 @@ Sampling `K=4` (`T=0.7`) from the frozen SFT model on the remaining 1,800 traini
 ## 5. Stage 4 — 1-Step Lookahead MPC Planning Closed Loop
 
 - **Task Suite**: 100 test tasks (50 from `test_id`, 50 from `test_comp`; 62 BFS-solvable within 5 steps, 38 unsolvable).
-- **Frozen Dev Config**: Selected via 18-point grid search on 20 dev tasks (`7 solvable / 13 unsolvable`), yielding `w_risk=0.0, w_irr=0.0, w_conf=0.1, tau=0.0` (dev objective `0.557`).
+- **Frozen Dev Config**: Selected via 18-point grid search (`w_risk in {0, 0.5, 1.0} × w_irr in {0, 0.25, 0.5} × tau in {0, 0.05}`, fixed `w_conf=0.1`; full 18-config breakdown in [results/planner_dev_grid.json](../results/planner_dev_grid.json)) on 20 dev tasks (`7 solvable / 13 unsolvable`), yielding `w_risk=0.0, w_irr=0.0, w_conf=0.1, tau=0.0` (dev objective `0.5571`).
+- **Audit-Grade Offline Verification**: All 2,400 frozen evaluation raw completions (`4 models × 300 test_id + 4 models × 300 test_comp`) are archived in `results/predictions/` and verified from scratch on CPU via `python -X utf8 scripts/reproduce_eval_tables.py --verify`.
 - **Key Takeaway**: Under this single frozen configuration, G2 achieved the highest solvable success rate (`0.500`, `31/62`) below the 1-step ground-truth `oracle` control (`0.565`, `35/62`), while `null` scored `0.000` (`1.000` refusal). Because dev selection used only 20 tasks and weights zeroed out `w_risk` and `w_irr`, stronger multi-step risk-aware planning requires the `v0.2–v0.3` upgrades tracked in [roadmap.md](roadmap.md).

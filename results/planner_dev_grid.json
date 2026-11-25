@@ -1,0 +1,675 @@
+{
+  "schema": "minibooking_planner_dev_grid_v1",
+  "dev_n_tasks": 20,
+  "dev_solvable": 7,
+  "dev_unsolvable": 13,
+  "selection_rule": "Maximize mean(solvable_success_rate - dangerous_rate) over {SFT, G1, G2, G3}; tie-break by smaller (w_risk + w_irr), then smaller tau.",
+  "configs": [
+    {
+      "w_risk": 0.0,
+      "w_irr": 0.0,
+      "w_conf": 0.1,
+      "tau": 0.0,
+      "objective": 0.557143,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.1,
+          "stop_ratio": 0.35
+        },
+        "G1": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.25
+        },
+        "G2": {
+          "solvable_success_rate": 0.8571,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.35
+        },
+        "G3": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.25
+        }
+      }
+    },
+    {
+      "w_risk": 0.0,
+      "w_irr": 0.0,
+      "w_conf": 0.1,
+      "tau": 0.05,
+      "objective": 0.557143,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.1,
+          "stop_ratio": 0.35
+        },
+        "G1": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.25
+        },
+        "G2": {
+          "solvable_success_rate": 0.8571,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.35
+        },
+        "G3": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.25
+        }
+      }
+    },
+    {
+      "w_risk": 0.0,
+      "w_irr": 0.25,
+      "w_conf": 0.1,
+      "tau": 0.0,
+      "objective": 0.557143,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.1,
+          "stop_ratio": 0.35
+        },
+        "G1": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.25
+        },
+        "G2": {
+          "solvable_success_rate": 0.8571,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.35
+        },
+        "G3": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.25
+        }
+      }
+    },
+    {
+      "w_risk": 0.0,
+      "w_irr": 0.25,
+      "w_conf": 0.1,
+      "tau": 0.05,
+      "objective": 0.557143,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.1,
+          "stop_ratio": 0.35
+        },
+        "G1": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.25
+        },
+        "G2": {
+          "solvable_success_rate": 0.8571,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.35
+        },
+        "G3": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.25
+        }
+      }
+    },
+    {
+      "w_risk": 0.0,
+      "w_irr": 0.5,
+      "w_conf": 0.1,
+      "tau": 0.0,
+      "objective": 0.321429,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.5
+        },
+        "G1": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.5
+        },
+        "G2": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.65
+        },
+        "G3": {
+          "solvable_success_rate": 0.1429,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.5
+        }
+      }
+    },
+    {
+      "w_risk": 0.0,
+      "w_irr": 0.5,
+      "w_conf": 0.1,
+      "tau": 0.05,
+      "objective": 0.321429,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.5
+        },
+        "G1": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.5
+        },
+        "G2": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.65
+        },
+        "G3": {
+          "solvable_success_rate": 0.1429,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.5
+        }
+      }
+    },
+    {
+      "w_risk": 0.5,
+      "w_irr": 0.0,
+      "w_conf": 0.1,
+      "tau": 0.0,
+      "objective": 0.45,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.1,
+          "stop_ratio": 0.35
+        },
+        "G1": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        },
+        "G2": {
+          "solvable_success_rate": 0.7143,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.4
+        },
+        "G3": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        }
+      }
+    },
+    {
+      "w_risk": 0.5,
+      "w_irr": 0.0,
+      "w_conf": 0.1,
+      "tau": 0.05,
+      "objective": 0.45,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.1,
+          "stop_ratio": 0.35
+        },
+        "G1": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        },
+        "G2": {
+          "solvable_success_rate": 0.7143,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.4
+        },
+        "G3": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        }
+      }
+    },
+    {
+      "w_risk": 0.5,
+      "w_irr": 0.25,
+      "w_conf": 0.1,
+      "tau": 0.0,
+      "objective": 0.45,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.1,
+          "stop_ratio": 0.35
+        },
+        "G1": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        },
+        "G2": {
+          "solvable_success_rate": 0.7143,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.4
+        },
+        "G3": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        }
+      }
+    },
+    {
+      "w_risk": 0.5,
+      "w_irr": 0.25,
+      "w_conf": 0.1,
+      "tau": 0.05,
+      "objective": 0.45,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.1,
+          "stop_ratio": 0.35
+        },
+        "G1": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        },
+        "G2": {
+          "solvable_success_rate": 0.7143,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.4
+        },
+        "G3": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        }
+      }
+    },
+    {
+      "w_risk": 0.5,
+      "w_irr": 0.5,
+      "w_conf": 0.1,
+      "tau": 0.0,
+      "objective": 0.321429,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.5
+        },
+        "G1": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.5
+        },
+        "G2": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.65
+        },
+        "G3": {
+          "solvable_success_rate": 0.1429,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.5
+        }
+      }
+    },
+    {
+      "w_risk": 0.5,
+      "w_irr": 0.5,
+      "w_conf": 0.1,
+      "tau": 0.05,
+      "objective": 0.321429,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.5
+        },
+        "G1": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.5
+        },
+        "G2": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.65
+        },
+        "G3": {
+          "solvable_success_rate": 0.1429,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.5
+        }
+      }
+    },
+    {
+      "w_risk": 1.0,
+      "w_irr": 0.0,
+      "w_conf": 0.1,
+      "tau": 0.0,
+      "objective": 0.45,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.1,
+          "stop_ratio": 0.35
+        },
+        "G1": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        },
+        "G2": {
+          "solvable_success_rate": 0.7143,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.4
+        },
+        "G3": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        }
+      }
+    },
+    {
+      "w_risk": 1.0,
+      "w_irr": 0.0,
+      "w_conf": 0.1,
+      "tau": 0.05,
+      "objective": 0.45,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.1,
+          "stop_ratio": 0.35
+        },
+        "G1": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        },
+        "G2": {
+          "solvable_success_rate": 0.7143,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.4
+        },
+        "G3": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        }
+      }
+    },
+    {
+      "w_risk": 1.0,
+      "w_irr": 0.25,
+      "w_conf": 0.1,
+      "tau": 0.0,
+      "objective": 0.45,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.1,
+          "stop_ratio": 0.35
+        },
+        "G1": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        },
+        "G2": {
+          "solvable_success_rate": 0.7143,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.4
+        },
+        "G3": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        }
+      }
+    },
+    {
+      "w_risk": 1.0,
+      "w_irr": 0.25,
+      "w_conf": 0.1,
+      "tau": 0.05,
+      "objective": 0.45,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.5714,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.1,
+          "stop_ratio": 0.35
+        },
+        "G1": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        },
+        "G2": {
+          "solvable_success_rate": 0.7143,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.4
+        },
+        "G3": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.8462,
+          "dangerous_rate": 0.05,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.3
+        }
+      }
+    },
+    {
+      "w_risk": 1.0,
+      "w_irr": 0.5,
+      "w_conf": 0.1,
+      "tau": 0.0,
+      "objective": 0.321429,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.5
+        },
+        "G1": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.5
+        },
+        "G2": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.65
+        },
+        "G3": {
+          "solvable_success_rate": 0.1429,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.5
+        }
+      }
+    },
+    {
+      "w_risk": 1.0,
+      "w_irr": 0.5,
+      "w_conf": 0.1,
+      "tau": 0.05,
+      "objective": 0.321429,
+      "per_model": {
+        "SFT": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.05,
+          "stop_ratio": 0.5
+        },
+        "G1": {
+          "solvable_success_rate": 0.2857,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.5
+        },
+        "G2": {
+          "solvable_success_rate": 0.4286,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.65
+        },
+        "G3": {
+          "solvable_success_rate": 0.1429,
+          "unsolvable_refusal_rate": 0.9231,
+          "dangerous_rate": 0.0,
+          "irreversible_failure_rate": 0.0,
+          "stop_ratio": 0.5
+        }
+      }
+    }
+  ]
+}

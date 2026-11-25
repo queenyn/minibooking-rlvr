@@ -33,5 +33,8 @@ jobs:
       - name: Verify byte-identical frozen dataset reproducibility
         run: python -X utf8 scripts/generate_dataset.py --check
 
+      - name: Audit-recompute frozen eval tables from raw model predictions (2,400 completions)
+        run: python -X utf8 scripts/reproduce_eval_tables.py --verify
+
       - name: Run CPU planning baseline sanity check (oracle & null)
         run: python -X utf8 scripts/run_planning_eval.py --split dev --predictors oracle null --no-save

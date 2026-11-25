@@ -47,3 +47,22 @@ def test_training_dynamics_and_curated_trajectories_schema():
 
     viewer_html = (REPO_ROOT / "demos" / "trajectory_viewer.html").read_text(encoding="utf-8")
     assert "MiniBooking-RLVR" in viewer_html and "test_comp-000" in viewer_html
+
+    dev_grid = json.loads((REPO_ROOT / "results" / "planner_dev_grid.json").read_text(encoding="utf-8"))
+    assert len(dev_grid["configs"]) == 18
+    assert all(set(c["per_model"]) == {"SFT", "G1", "G2", "G3"} for c in dev_grid["configs"])
+
+
+def test_archived_raw_predictions_reproduce_summary_metrics():
+    import importlib.util
+
+    script_path = REPO_ROOT / "scripts" / "reproduce_eval_tables.py"
+    spec = importlib.util.spec_from_file_location("reproduce_eval_tables", script_path)
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    recomputed = mod.recompute_all(REPO_ROOT / "data", REPO_ROOT / "results" / "predictions")
+    summary = json.loads((REPO_ROOT / "results" / "summary_metrics.json").read_text(encoding="utf-8"))
+    mismatches = mod.verify_against_summary(recomputed, summary)
+    assert mismatches == [], f"Audit mismatches: {mismatches}"

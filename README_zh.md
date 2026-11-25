@@ -59,6 +59,7 @@
 python -m pip install -e ".[dev]"
 python -X utf8 -m pytest -v
 python -X utf8 scripts/generate_dataset.py --check
+python -X utf8 scripts/reproduce_eval_tables.py --verify
 python -X utf8 scripts/run_planning_eval.py --split test --predictors oracle null --no-save
 ```
 
