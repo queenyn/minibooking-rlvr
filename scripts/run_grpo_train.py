@@ -25,6 +25,7 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Pure-PyTorch GRPO trainer for MiniBooking-RLVR.")
     parser.add_argument("--group", choices=("G1", "G2", "G3"), required=True)
     parser.add_argument("--config", type=Path, default=Path("configs/grpo_formal_config.json"))
+    parser.add_argument("--train-order", type=Path, default=Path("configs/grpo_train_order.json"), help="Optional frozen 800-slot GRPO prompt schedule.")
     parser.add_argument("--data-dir", type=Path, default=Path("data"))
     parser.add_argument("--sft-adapter", type=Path, required=True, help="Path to frozen LoRA SFT adapter.")
     parser.add_argument("--out-dir", type=Path, required=True)
@@ -96,7 +97,19 @@ def main(argv: list[str] | None = None) -> None:
     controller = EntropyController(**group_spec["controller"]) if group_spec["entropy_controller"] else None
     with_reg = bool(group_spec["entropy_regularization"])
 
-    records = load_jsonl(args.data_dir / "train.jsonl")
+    all_train = load_jsonl(args.data_dir / "train.jsonl")
+    if args.train_order and args.train_order.exists():
+        import hashlib
+
+        order_spec = json.loads(args.train_order.read_text(encoding="utf-8"))
+        order_ids = order_spec["sample_ids"]
+        got_sha = hashlib.sha256(",".join(order_ids).encode("utf-8")).hexdigest()[:16]
+        if got_sha != order_spec["train_order_sha"]:
+            raise ValueError(f"train_order_sha mismatch: {got_sha} != {order_spec['train_order_sha']}")
+        by_id = {r["sample_id"]: r for r in all_train}
+        records = [by_id[sid] for sid in order_ids]
+    else:
+        records = all_train
     k_size = int(gcfg["group_size_K"])
     n_prompts = int(gcfg["prompts_per_step"])
     eos_ids = eos_token_ids(model, tokenizer)

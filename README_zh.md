@@ -1,6 +1,6 @@
 # MiniBooking-RLVR（中文说明）
 
-[English README](README.md) | [架构设计](docs/architecture.md) | [完整实验报告](docs/experiments.md) | [演进路线图](docs/roadmap.md)
+[English README](README.md) | [架构设计](docs/architecture.md) | [完整实验报告](docs/experiments.md) | [典型失败与轨迹剖析](docs/case_studies.md) | [交互式轨迹回放器](demos/trajectory_viewer.html) | [演进路线图](docs/roadmap.md)
 
 **面向小参数大模型世界模型的可验证状态增量与可逆性基准、纯 PyTorch 手写 GRPO（含 H/D/S/C 在线诊断与熵反馈控制器），以及风险感知一步前瞻 MPC 规划闭环。**
 
@@ -44,6 +44,15 @@
 
 ---
 
+## 研究背景与论文引用边界
+
+本仓库是一个**独立构建的轻量级可验证工程测试床**，问题设定与诊断思路受以下两篇 NeurIPS 2026 Poster 论文启发，但**并非**两篇论文的官方代码发布仓：
+
+- **DACE-RL**：*DACE RL for Compute Efficient Reinforcement Learning in Small Model Reasoning*（NeurIPS 2026 Poster，[OpenReview](https://openreview.net/forum?id=asPNY0YBKr)）—— 借鉴了 H/D/S/C 在线训练动态诊断与单旋钮准确率门控熵反馈思路（`lambda_entropy`，区别于固定 `beta_kl`）；未复现论文中的 ARB、DUAL-EDC 多轴控制与数学推理基准。
+- **CDWM**：*Predicting What Changes: Causal Delta World Models for Risk-Aware LLM Agent Planning*（NeurIPS 2026 Poster，[OpenReview](https://openreview.net/forum?id=AiYvJPM2Oy)）—— 借鉴了“预测状态增量（`changes`）+ 可逆性 + 代价 + 置信度”的世界模型建模与风险感知闭环规划思路；本仓库基于独立实现的 MiniBooking 确定性订单状态机，不含论文中的因果稀疏掩码与 WebArena/ALFWorld 实验。
+
+---
+
 ## 本地快速验证（纯 CPU，5 秒内完成）
 
 ```bash
@@ -52,3 +61,5 @@ python -X utf8 -m pytest -v
 python -X utf8 scripts/generate_dataset.py --check
 python -X utf8 scripts/run_planning_eval.py --split test --predictors oracle null --no-save
 ```
+
+如需浏览 8 条真实多模型闭环规划对比轨迹（含非法 `create` 打平空转、1-step 视野受限停止与无解不可逆陷阱），直接用浏览器打开 [demos/trajectory_viewer.html](demos/trajectory_viewer.html) 即可离线交互回放。

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate clean publication-style English figures from ``results/summary_metrics.json``."""
+"""Generate publication-style English figures from ``results/summary_metrics.json`` and ``results/training_dynamics.json``."""
 
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ import numpy as np
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 METRICS_PATH = REPO_ROOT / "results" / "summary_metrics.json"
+DYNAMICS_PATH = REPO_ROOT / "results" / "training_dynamics.json"
 FIG_DIR = REPO_ROOT / "results" / "figures"
 
 PALETTE = {
@@ -33,6 +34,20 @@ def _style_ax(ax: plt.Axes) -> None:
     ax.set_axisbelow(True)
 
 
+def _rolling_mean(values: list[float | None], window: int = 15) -> tuple[np.ndarray, np.ndarray]:
+    xs, ys = [], []
+    buf: list[float] = []
+    for idx, val in enumerate(values, start=1):
+        if val is not None:
+            buf.append(float(val))
+        if len(buf) > window:
+            buf.pop(0)
+        if buf:
+            xs.append(idx)
+            ys.append(sum(buf) / len(buf))
+    return np.asarray(xs), np.asarray(ys)
+
+
 def plot_frozen_eval(data: dict) -> None:
     models = ["SFT", "G1", "G2", "G3"]
     metrics = [
@@ -41,7 +56,7 @@ def plot_frozen_eval(data: dict) -> None:
         ("test_comp\nReversible Macro-F1", [data["frozen_eval"]["test_comp"][m]["rev_macro_f1"] for m in models]),
     ]
 
-    fig, ax = plt.subplots(figsize=(9.2, 4.6), dpi=200)
+    fig, ax = plt.subplots(figsize=(9.2, 4.7), dpi=200)
     x = np.arange(len(metrics))
     width = 0.19
 
@@ -85,7 +100,6 @@ def plot_frozen_eval(data: dict) -> None:
 def plot_diagnostics_and_controller(data: dict) -> None:
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.6, 4.9), dpi=200)
 
-    # Panel A: Zero-variance group decomposition across 800 total groups (200 steps x 4 prompts)
     groups = ["G1\n(DeltaF1)", "G2\n(Composite)", "G3\n(Composite + Ctrl)"]
     zvs = data["grpo_training"]["zero_var_split"]
     keys = ["G1", "G2", "G3"]
@@ -117,7 +131,6 @@ def plot_diagnostics_and_controller(data: dict) -> None:
     ax1.legend(frameon=False, fontsize=8.2, ncol=2, loc="upper center", bbox_to_anchor=(0.5, 1.01))
     _style_ax(ax1)
 
-    # Panel B: Dev[:100] full_exact curve + G3 lambda_entropy spike
     curve = data["grpo_training"]["dev100_full_exact_curve"]
     steps = curve["steps"]
     for k in ["G1", "G2", "G3"]:
@@ -194,13 +207,97 @@ def plot_planning_closed_loop(data: dict) -> None:
     plt.close(fig)
 
 
+def plot_training_dynamics(dyn: dict, summary: dict) -> None:
+    """2x2 panel of real 200-step GRPO training dynamics and 20-step LR stability sweep."""
+    fig, axes = plt.subplots(2, 2, figsize=(11.8, 7.8), dpi=200)
+    ax_kl, ax_ent, ax_eff, ax_lr = axes.flat
+    groups = ["G1", "G2", "G3"]
+
+    # Panel A: k3 KL divergence (15-step rolling mean + faint raw)
+    for g in groups:
+        rows = dyn["groups"][g]
+        steps = [r["step"] for r in rows]
+        raw_kl = [r["kl"] for r in rows]
+        rx, ry = _rolling_mean(raw_kl, window=15)
+        ax_kl.plot(steps, raw_kl, color=PALETTE[g], alpha=0.16, linewidth=0.9)
+        ax_kl.plot(rx, ry, color=PALETTE[g], linewidth=2.0, label=f"{g} (15-step avg)")
+    ax_kl.set_title("A. k3 KL Divergence to SFT Reference (beta_kl = 0.04)", fontsize=10.8, fontweight="bold")
+    ax_kl.set_xlabel("Optimizer Step", fontsize=9.5)
+    ax_kl.set_ylabel("Mean Sequence k3 KL", fontsize=9.5)
+    ax_kl.set_xlim(1, 200)
+    ax_kl.set_ylim(0.0, 0.095)
+    ax_kl.legend(frameon=False, fontsize=8.2, loc="upper left")
+    _style_ax(ax_kl)
+
+    # Panel B: Effective-group token entropy H_eff_mean (T=1.0) vs H_ref / H_low
+    ctrl_info = summary["grpo_training"]["g3_controller"]
+    for g in groups:
+        rows = dyn["groups"][g]
+        raw_h = [r["H_eff_mean"] for r in rows]
+        rx, ry = _rolling_mean(raw_h, window=15)
+        ax_ent.plot(rx, ry, color=PALETTE[g], linewidth=2.0, label=f"{g} H_eff (15-step avg)")
+    ax_ent.axhline(ctrl_info["H_ref"], color="#334155", linestyle=":", linewidth=1.3, label=f"H_ref = {ctrl_info['H_ref']:.4f}")
+    ax_ent.axhline(ctrl_info["H_low"], color="#DC2626", linestyle="--", linewidth=1.3, label=f"H_low = {ctrl_info['H_low']:.4f}")
+    ax_ent.axvline(170, color="#B45309", linestyle="-.", linewidth=1.1, alpha=0.8)
+    ax_ent.text(167, 0.0465, "G3 trigger\n(step 170)", ha="right", va="top", fontsize=7.8, color="#B45309")
+    ax_ent.set_title("B. Effective-Group Token Entropy (T = 1.0)", fontsize=10.8, fontweight="bold")
+    ax_ent.set_xlabel("Optimizer Step", fontsize=9.5)
+    ax_ent.set_ylabel("Token Entropy (nats)", fontsize=9.5)
+    ax_ent.set_xlim(1, 200)
+    ax_ent.set_ylim(0.015, 0.050)
+    ax_ent.legend(frameon=False, fontsize=7.8, ncol=2, loc="upper left")
+    _style_ax(ax_ent)
+
+    # Panel C: 20-step rolling effective groups per step (out of 4)
+    for g in groups:
+        rows = dyn["groups"][g]
+        raw_eff = [r["n_effective"] for r in rows]
+        rx, ry = _rolling_mean(raw_eff, window=20)
+        ax_eff.plot(rx, ry, color=PALETTE[g], linewidth=2.0, label=f"{g} (mean={np.mean(raw_eff):.2f}/4)")
+    ax_eff.set_title("C. Rolling Effective Gradient Groups per Step (out of 4)", fontsize=10.8, fontweight="bold")
+    ax_eff.set_xlabel("Optimizer Step", fontsize=9.5)
+    ax_eff.set_ylabel("Effective Groups / Step (20-step avg)", fontsize=9.5)
+    ax_eff.set_xlim(1, 200)
+    ax_eff.set_ylim(0.0, 2.6)
+    ax_eff.legend(frameon=False, fontsize=8.2, loc="upper right")
+    _style_ax(ax_eff)
+
+    # Panel D: Pre-formal 20-step LR stability sweep (G1, 5e-6 vs 1e-5 vs 2e-5)
+    lr_keys = ["lr_5e-6", "lr_1e-5", "lr_2e-5"]
+    lr_labels = ["5e-6\n(stable)", "1e-5\n(selected)", "2e-5\n(KL > 0.05)"]
+    kl_max_vals = [dyn["lr_sweep"][k]["kl_max"] for k in lr_keys]
+    bar_colors = ["#64748B", "#0D9488", "#EF4444"]
+    x_lr = np.arange(len(lr_keys))
+    bars = ax_lr.bar(x_lr, kl_max_vals, width=0.50, color=bar_colors, zorder=3)
+    ax_lr.axhline(0.05, color="#DC2626", linestyle="--", linewidth=1.3, label="Stability cap (kl_max < 0.05)")
+    for b, v in zip(bars, kl_max_vals):
+        ax_lr.text(b.get_x() + b.get_width() / 2, v + 0.0022, f"{v:.4f}", ha="center", va="bottom", fontsize=8.8, fontweight="bold")
+    ax_lr.set_xticks(x_lr)
+    ax_lr.set_xticklabels(lr_labels, fontsize=9.5)
+    ax_lr.set_ylim(0.0, 0.075)
+    ax_lr.set_ylabel("Peak k3 KL over 20 Steps", fontsize=9.5)
+    ax_lr.set_title("D. Pre-Formal Learning Rate Stability Sweep (G1)", fontsize=10.8, fontweight="bold")
+    ax_lr.legend(frameon=False, fontsize=8.2, loc="upper left")
+    _style_ax(ax_lr)
+
+    fig.suptitle("Pure-PyTorch GRPO Training Dynamics & Hyperparameter Verification (200 Steps)", fontsize=12.5, fontweight="bold", y=0.985)
+    fig.tight_layout(rect=(0, 0, 1, 0.955))
+    fig.savefig(FIG_DIR / "fig4_training_dynamics.png", dpi=200)
+    plt.close(fig)
+
+
 def main() -> None:
     FIG_DIR.mkdir(parents=True, exist_ok=True)
     data = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
     plot_frozen_eval(data)
     plot_diagnostics_and_controller(data)
     plot_planning_closed_loop(data)
-    print(f"Generated 3 figures in {FIG_DIR}")
+    if DYNAMICS_PATH.exists():
+        dyn = json.loads(DYNAMICS_PATH.read_text(encoding="utf-8"))
+        plot_training_dynamics(dyn, data)
+        print(f"Generated 4 figures in {FIG_DIR}")
+    else:
+        print(f"Generated 3 figures in {FIG_DIR}")
 
 
 if __name__ == "__main__":

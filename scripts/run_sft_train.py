@@ -33,6 +33,7 @@ def encode_sft_example(tokenizer: Any, record: Dict[str, Any]) -> Dict[str, List
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="LoRA SFT for MiniBooking world model.")
     parser.add_argument("--data-dir", type=Path, default=Path("data"))
+    parser.add_argument("--train-ids", type=Path, default=Path("configs/sft_train_ids.json"), help="Optional frozen SFT sample_id list.")
     parser.add_argument("--out-dir", type=Path, default=Path("outputs/sft"))
     parser.add_argument("--model-id", default="Qwen/Qwen3-1.7B")
     parser.add_argument("--revision", default="70d244cc86ccca08cf5af4e1e306ecf908b1ad5e")
@@ -50,7 +51,13 @@ def main(argv: list[str] | None = None) -> None:
     random.seed(args.seed)
     torch.manual_seed(args.seed)
 
-    train_records = load_jsonl(args.data_dir / "train.jsonl")[: args.n_train]
+    all_train = load_jsonl(args.data_dir / "train.jsonl")
+    if args.train_ids and args.train_ids.exists():
+        id_spec = json.loads(args.train_ids.read_text(encoding="utf-8"))
+        by_id = {r["sample_id"]: r for r in all_train}
+        train_records = [by_id[sid] for sid in id_spec["sample_ids"]]
+    else:
+        train_records = all_train[: args.n_train]
     dev_records = load_jsonl(args.data_dir / "dev.jsonl")[:100]
 
     tokenizer = AutoTokenizer.from_pretrained(args.model_id, revision=args.revision)
