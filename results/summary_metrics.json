@@ -1,0 +1,93 @@
+{
+  "schema": "minibooking_verified_results_v1",
+  "caveats": {
+    "single_seed": true,
+    "seed": 20261025,
+    "stack": "Pure PyTorch hand-written GRPO + LoRA SFT on Qwen/Qwen3-1.7B (no TRL, no vLLM)",
+    "run_to_run_noise_note": "G2 and G3 diverged at step 5 while lambda_entropy was still 0.0 due to GPU bf16 non-determinism; dev[:100] full_exact difference at step 100 was 0.06 (0.87 vs 0.81).",
+    "controller_note": "In the 200-step G3 run (20 controller checks), EntropyController triggered once at step 170 (lambda=1e-4 for steps 171-180, max entropy-to-policy gradient ratio 7.67e-5). Thus G3 approx G2 in this single-seed run; controller efficacy is not claimed."
+  },
+  "sft_dev100": {
+    "n": 100,
+    "base": { "json_valid": 0.96, "changes_exact": 0.52, "full_exact": 0.44 },
+    "step_75": { "json_valid": 1.00, "changes_exact": 0.77, "full_exact": 0.73 },
+    "step_150": { "json_valid": 1.00, "changes_exact": 0.92, "full_exact": 0.91 }
+  },
+  "grpo_training": {
+    "steps": 200,
+    "groups_total": 800,
+    "offline_filter": {
+      "pool_before": 1800,
+      "pool_after": 702,
+      "removed_all_correct": 1098,
+      "zero_var_before": 0.6389,
+      "zero_var_after": 0.0741
+    },
+    "dev100_full_exact_curve": {
+      "steps": [50, 100, 150, 200],
+      "G1": [0.77, 0.86, 0.84, 0.89],
+      "G2": [0.77, 0.87, 0.90, 0.89],
+      "G3": [0.78, 0.81, 0.84, 0.86]
+    },
+    "zero_var_split": {
+      "G1": { "n_groups": 800, "n_effective": 162, "n_zero_var": 638, "n_all_correct": 495, "n_all_wrong": 47, "n_other_same": 96, "zero_var_frac": 0.7975 },
+      "G2": { "n_groups": 800, "n_effective": 211, "n_zero_var": 589, "n_all_correct": 479, "n_all_wrong": 0, "n_other_same": 110, "zero_var_frac": 0.73625 },
+      "G3": { "n_groups": 800, "n_effective": 196, "n_zero_var": 604, "n_all_correct": 485, "n_all_wrong": 0, "n_other_same": 119, "zero_var_frac": 0.7550 }
+    },
+    "g3_controller": {
+      "n_updates": 20,
+      "trigger_count": 1,
+      "trigger_step": 170,
+      "active_steps": [171, 180],
+      "lambda_max_used": 0.0001,
+      "lambda_final": 0.0,
+      "ent_grad_ratio_max": 7.67202213964361e-05,
+      "H_ref": 0.03256429441490207,
+      "H_low": 0.026051435531921657
+    }
+  },
+  "frozen_eval": {
+    "decoding": "greedy",
+    "max_new_tokens": 256,
+    "n_per_split": 300,
+    "test_id": {
+      "SFT": { "json_valid": 1.0000, "parse_coverage": 1.0000, "exact": 0.8833, "delta_f1": 0.9282, "full_exact": 0.8700, "rev_macro_f1": 0.9167, "rev_acc": 0.9467, "cost_mae": 0.0388, "brier": 0.1167, "frac_conf_eq_1": 1.0000 },
+      "G1":  { "json_valid": 1.0000, "parse_coverage": 0.9933, "exact": 0.9133, "delta_f1": 0.9531, "full_exact": 0.9067, "rev_macro_f1": 0.9409, "rev_acc": 0.9567, "cost_mae": 0.0367, "brier": 0.0867, "frac_conf_eq_1": 1.0000 },
+      "G2":  { "json_valid": 1.0000, "parse_coverage": 0.9933, "exact": 0.9033, "delta_f1": 0.9498, "full_exact": 0.8933, "rev_macro_f1": 0.9324, "rev_acc": 0.9500, "cost_mae": 0.0363, "brier": 0.0967, "frac_conf_eq_1": 1.0000 },
+      "G3":  { "json_valid": 1.0000, "parse_coverage": 0.9933, "exact": 0.8967, "delta_f1": 0.9398, "full_exact": 0.8833, "rev_macro_f1": 0.9409, "rev_acc": 0.9567, "cost_mae": 0.0360, "brier": 0.1033, "frac_conf_eq_1": 1.0000 }
+    },
+    "test_comp": {
+      "SFT": { "json_valid": 1.0000, "parse_coverage": 0.9967, "exact": 0.8767, "delta_f1": 0.9380, "full_exact": 0.7267, "rev_macro_f1": 0.5163, "rev_acc": 0.7533, "cost_mae": 0.0430, "brier": 0.1233, "frac_conf_eq_1": 1.0000 },
+      "G1":  { "json_valid": 1.0000, "parse_coverage": 0.9967, "exact": 0.8433, "delta_f1": 0.9329, "full_exact": 0.7433, "rev_macro_f1": 0.7256, "rev_acc": 0.8333, "cost_mae": 0.0497, "brier": 0.1567, "frac_conf_eq_1": 1.0000 },
+      "G2":  { "json_valid": 1.0000, "parse_coverage": 0.9967, "exact": 0.8400, "delta_f1": 0.9365, "full_exact": 0.7567, "rev_macro_f1": 0.7401, "rev_acc": 0.8400, "cost_mae": 0.0538, "brier": 0.1600, "frac_conf_eq_1": 1.0000 },
+      "G3":  { "json_valid": 1.0000, "parse_coverage": 0.9933, "exact": 0.8233, "delta_f1": 0.9146, "full_exact": 0.7333, "rev_macro_f1": 0.7435, "rev_acc": 0.8400, "cost_mae": 0.0622, "brier": 0.1767, "frac_conf_eq_1": 1.0000 }
+    },
+    "test_comp_allow_change_true": {
+      "n": 178,
+      "SFT": { "exact": 0.8820, "full_exact": 0.7416, "rev_macro_f1": 0.5338 },
+      "G1":  { "exact": 0.8427, "full_exact": 0.7247, "rev_macro_f1": 0.6289 },
+      "G2":  { "exact": 0.8315, "full_exact": 0.7191, "rev_macro_f1": 0.6142 },
+      "G3":  { "exact": 0.8371, "full_exact": 0.7191, "rev_macro_f1": 0.6239 }
+    },
+    "inspect_regression_exact": {
+      "SFT": { "dev": 1.0, "test_id": 1.0, "test_comp": 1.0 },
+      "G1":  { "dev": 1.0, "test_id": 1.0, "test_comp": 1.0 },
+      "G2":  { "dev": 1.0, "test_id": 1.0, "test_comp": 1.0 },
+      "G3":  { "dev": 1.0, "test_id": 1.0, "test_comp": 1.0 }
+    }
+  },
+  "planning_closed_loop": {
+    "n_tasks": 100,
+    "n_solvable": 62,
+    "n_unsolvable": 38,
+    "frozen_config": { "w_risk": 0.0, "w_irr": 0.0, "w_conf": 0.1, "tau": 0.0 },
+    "overall": {
+      "SFT":    { "solvable_success_rate": 0.387, "solvable_success": 24, "unsolvable_refusal_rate": 0.658, "dangerous_rate": 0.040, "irreversible_failure_rate": 0.080, "stop_ratio": 0.390, "avg_steps": 2.370, "generate_calls": 71, "gen_tokens": 35705 },
+      "G1":     { "solvable_success_rate": 0.387, "solvable_success": 24, "unsolvable_refusal_rate": 0.658, "dangerous_rate": 0.040, "irreversible_failure_rate": 0.070, "stop_ratio": 0.380, "avg_steps": 2.400, "generate_calls": 71, "gen_tokens": 35398 },
+      "G2":     { "solvable_success_rate": 0.500, "solvable_success": 31, "unsolvable_refusal_rate": 0.605, "dangerous_rate": 0.040, "irreversible_failure_rate": 0.080, "stop_ratio": 0.340, "avg_steps": 2.350, "generate_calls": 68, "gen_tokens": 33274 },
+      "G3":     { "solvable_success_rate": 0.355, "solvable_success": 22, "unsolvable_refusal_rate": 0.658, "dangerous_rate": 0.040, "irreversible_failure_rate": 0.040, "stop_ratio": 0.310, "avg_steps": 2.780, "generate_calls": 78, "gen_tokens": 40803 },
+      "null":   { "solvable_success_rate": 0.000, "solvable_success": 0,  "unsolvable_refusal_rate": 1.000, "dangerous_rate": 0.000, "irreversible_failure_rate": 0.000, "stop_ratio": 1.000, "avg_steps": 0.000, "generate_calls": 0,  "gen_tokens": 0 },
+      "oracle": { "solvable_success_rate": 0.565, "solvable_success": 35, "unsolvable_refusal_rate": 0.500, "dangerous_rate": 0.040, "irreversible_failure_rate": 0.090, "stop_ratio": 0.650, "avg_steps": 0.780, "generate_calls": 0,  "gen_tokens": 0 }
+    }
+  }
+}

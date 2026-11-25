@@ -1,0 +1,25 @@
+{
+  "schema": "minibooking_planner_config_v1",
+  "selected_on": "dev",
+  "dev_n_tasks": 20,
+  "dev_solvable": 7,
+  "dev_unsolvable": 13,
+  "selection_rule": "Maximize mean(solvable_success_rate - dangerous_rate) across {SFT, G1, G2, G3}; tie-break by smaller (w_risk + w_irr), then smaller tau.",
+  "selected_dev_objective": 0.557142857142857,
+  "weights": {
+    "w_risk": 0.0,
+    "w_irr": 0.0,
+    "w_conf": 0.1
+  },
+  "tau": 0.0,
+  "max_steps": 5,
+  "max_candidates": 4,
+  "batch_size": 16,
+  "score_formula": "progress(predicted_state) - (w_risk * cost + w_irr * I(not reversible) + w_conf * (1 - confidence))",
+  "stop_rule": "max_score - progress(real_state) <= tau",
+  "candidate_tie_break": "first_candidate_in_deterministic_order",
+  "baselines": {
+    "null": "Zero-delta predictor (changes=[], cost=0.0, reversible=true, confidence=1.0)",
+    "oracle": "True transition predictor (ground-truth changes/cost/reversible, confidence=1.0); diagnostic control under the same 1-step planner, NOT an upper bound"
+  }
+}

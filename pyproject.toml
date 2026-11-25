@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "minibooking-rlvr"
+version = "0.1.0"
+description = "Verifiable state-delta & reversibility benchmark, pure-PyTorch GRPO with H/D/S/C diagnostics, and risk-aware 1-step MPC planning for LLM world models."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Yang Liu", email = "yangliu10@link.cuhk.edu.cn" },
+]
+requires-python = ">=3.10"
+keywords = [
+    "rlvr",
+    "grpo",
+    "llm-agents",
+    "world-model",
+    "reinforcement-learning",
+    "post-training",
+    "diagnostics",
+    "reversibility",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+train = [
+    "torch>=2.3",
+    "transformers>=4.45",
+    "peft>=0.13",
+    "safetensors>=0.4",
+]
+plot = [
+    "matplotlib>=3.8",
+]
+dev = [
+    "pytest>=7.4",
+    "matplotlib>=3.8",
+]
+
+[project.scripts]
+minibooking-rlvr = "minibooking_rlvr.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/queenyn/minibooking-rlvr"
+Repository = "https://github.com/queenyn/minibooking-rlvr"
+Issues = "https://github.com/queenyn/minibooking-rlvr/issues"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

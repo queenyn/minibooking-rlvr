@@ -1,0 +1,108 @@
+{
+  "env_version": "environment_v1",
+  "generator_version": "make_dataset_v1",
+  "seed": 20261025,
+  "scenario_family": {
+    "definition": "(price_cents, refund_ratio, allow_change, change_fee_cents, initial_balance_cents); all states of a family belong strictly to one split.",
+    "grids": {
+      "price_cents": [
+        100,
+        200
+      ],
+      "refund": [
+        "0/1",
+        "1/2",
+        "1/1"
+      ],
+      "allow_change": [
+        true,
+        false
+      ],
+      "change_fee_cents": [
+        0,
+        20
+      ],
+      "initial_balance_cents": [
+        0,
+        50,
+        100,
+        150,
+        200,
+        250,
+        300,
+        400,
+        600,
+        1000
+      ],
+      "allowed_days": [
+        1,
+        2,
+        3
+      ]
+    },
+    "num_rules": 24,
+    "num_families": 240,
+    "families_per_split": {
+      "train": 128,
+      "dev": 16,
+      "test_id": 16,
+      "test_comp": 80
+    }
+  },
+  "comp_heldout": {
+    "refund_fee_pairs": [
+      {
+        "refund": "1/2",
+        "change_fee_cents": 0
+      },
+      {
+        "refund": "1/1",
+        "change_fee_cents": 20
+      }
+    ],
+    "note": "Held-out (refund, change_fee_cents) pairs appear only in test_comp while each individual factor appears in train. When allow_change=False, change_fee_cents has no behavioral effect; compositional evaluation should separate allow_change=True and allow_change=False."
+  },
+  "generation": {
+    "walks_per_family": 60,
+    "max_walk_len": 8,
+    "illegal_ratio_target": 0.25,
+    "dedupe": "SHA256(canonical_json({rules, state_before, action}))",
+    "sampling": "Round-robin by action_type separately for legal and illegal pools without replacement"
+  },
+  "target_sizes": {
+    "train": 2400,
+    "dev": 300,
+    "test_id": 300,
+    "test_comp": 300
+  },
+  "actual_sizes": {
+    "train": 2400,
+    "dev": 300,
+    "test_id": 300,
+    "test_comp": 300
+  },
+  "scaled_down": false,
+  "scale_factor": 1.0,
+  "unique_pool_sizes": {
+    "train": {
+      "unique_items": 18436,
+      "legal": 6761,
+      "illegal": 11675
+    },
+    "dev": {
+      "unique_items": 2145,
+      "legal": 856,
+      "illegal": 1289
+    },
+    "test_id": {
+      "unique_items": 2431,
+      "legal": 810,
+      "illegal": 1621
+    },
+    "test_comp": {
+      "unique_items": 10219,
+      "legal": 3781,
+      "illegal": 6438
+    }
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "schema": "minibooking_grpo_formal_v1",
+  "base_model": {
+    "model_id": "Qwen/Qwen3-1.7B",
+    "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+    "dtype": "bfloat16",
+    "enable_thinking": false,
+    "prompt_version": "minibooking_prompt_v1",
+    "init_and_reference": "base@revision merged with frozen LoRA-SFT adapter in bf16; reference logprobs computed via disable_adapter() on the same weights"
+  },
+  "data_sha256": {
+    "data/train.jsonl": "6b2fa4029078672d563447508a0bf6f5c78632784e8c7975266a6edd7919d2d7",
+    "data/dev.jsonl": "fd64e7a0525135d313df2bfa1a9cf3c91dcecb71e060bd145bf4a5cad9fa1d21",
+    "data/test_id.jsonl": "ad0bc9329860417e8c6077f9a0b0ec23bf6b789b463e007ea741284ab95c3bb7",
+    "data/test_comp.jsonl": "378c7eec15a24611908431c6a116e4c5ced248d4f5e10888596bf9cc372a7cfa"
+  },
+  "sft": {
+    "train_samples": 600,
+    "steps": 150,
+    "effective_batch_size": 8,
+    "lr": 1e-4,
+    "completion_only_loss": true,
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.0,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    }
+  },
+  "grpo": {
+    "implementation": "pure_pytorch",
+    "seed": 20261025,
+    "steps": 200,
+    "prompts_per_step": 4,
+    "group_size_K": 4,
+    "max_new_tokens": 256,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "top_k": 0,
+    "logprob_temperature": 0.7,
+    "entropy_log_temperature": 1.0,
+    "advantage_type": "group",
+    "advantage_std": "population",
+    "advantage_eps": 1e-8,
+    "clip_eps": 0.2,
+    "policy_iters": 1,
+    "beta_kl": 0.04,
+    "kl_estimator": "k3",
+    "invalid_reward": -1.0,
+    "lr": 1e-5,
+    "warmup_steps": 5,
+    "schedule": "linear_warmup_then_constant",
+    "optimizer": "AdamW",
+    "betas": [0.9, 0.999],
+    "adam_eps": 1e-8,
+    "weight_decay": 0.0,
+    "max_grad_norm": 1.0,
+    "checkpoint_every": 25,
+    "eval_at": [50, 100, 150, 200],
+    "eval_decoding": "greedy",
+    "offline_filter": {
+      "pool_before": 1800,
+      "pool_after": 702,
+      "removed_all_correct_k4": 1098,
+      "zero_var_rate_before": 0.6389,
+      "zero_var_rate_after": 0.0741,
+      "train_slots": 800,
+      "repeated_cancel_slots": 98,
+      "min_repeat_gap_steps": 97
+    }
+  },
+  "groups": {
+    "G1": {
+      "reward_group": "G1",
+      "reward_formula": "DeltaF1 (invalid JSON/schema = -1.0)",
+      "entropy_regularization": false,
+      "entropy_controller": false,
+      "lambda_entropy": 0.0
+    },
+    "G2": {
+      "reward_group": "G2",
+      "reward_formula": "0.60 * DeltaF1 + 0.25 * RiskScore + 0.15 * (1 - Brier) (invalid = -1.0)",
+      "entropy_regularization": false,
+      "entropy_controller": false,
+      "lambda_entropy": 0.0
+    },
+    "G3": {
+      "reward_group": "G3",
+      "reward_formula": "Same composite reward as G2",
+      "loss_formula": "policy_loss + beta_kl * KL - lambda_entropy * H_reg",
+      "entropy_regularization": true,
+      "entropy_controller": true,
+      "reg_temperature": 1.0,
+      "controller": {
+        "H_ref": 0.03256429441490207,
+        "H_low": 0.026051435531921657,
+        "H_low_ratio": 0.8,
+        "ema_decay": 0.9,
+        "update_every": 10,
+        "exact_threshold": 0.9,
+        "lambda_init": 0.0,
+        "lambda_min": 0.0,
+        "lambda_max": 0.2,
+        "mode": "log",
+        "add_step_up": 0.0001,
+        "add_step_down": 5e-05,
+        "log_factor_up": 2.0,
+        "log_factor_down": 0.8,
+        "log_floor": 0.0001
+      }
+    }
+  }
+}
